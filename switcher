@@ -1,0 +1,13 @@
+#! /usr/bin/env php
+
+<?php
+
+use Switcher\CreatePageCommand;
+use Symfony\Component\Console\Application;
+
+require_once("vendor/autoload.php");
+
+$app = new Application('Switcher', '1.0');
+$app->add(new CreatePageCommand);
+
+$app->run();
