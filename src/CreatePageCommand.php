@@ -10,8 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreatePageCommand extends Command
 {
     private $placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
-    /** @var  OutputInterface */
-    private $output;
 
     public function __construct()
     {
@@ -31,8 +29,6 @@ class CreatePageCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->output = $output;
-
         $inputArguments = $input->getArguments();
         $files = Finder::findFiles('*.xml', '*.php')->from($this->templateFolder);
 
@@ -40,15 +36,15 @@ class CreatePageCommand extends Command
             /** @var \SplFileInfo $file */
             $folderStructurePath = str_replace($this->templateFolder, '', $file->getPathname());
 
-            $translatedPath = $this->createFoldersForFile($folderStructurePath, $inputArguments);
-            $this->createFile($file, $translatedPath, $inputArguments);
+            $createdPathForNewFile = $this->createFolderForFile($folderStructurePath, $inputArguments);
+            $this->createFile($file, $createdPathForNewFile, $inputArguments);
         }
 
         $this->registerPageToConfig($output, $inputArguments);
         $output->writeln('All done.');
     }
 
-    private function createFoldersForFile($folderStructurePath, $arguments)
+    private function createFolderForFile($folderStructurePath, $arguments)
     {
         $folderOutputPath = $this->outputFolder;
         $pathPieces = explode(DIRECTORY_SEPARATOR, $folderStructurePath);
