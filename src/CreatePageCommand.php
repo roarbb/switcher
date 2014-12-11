@@ -21,7 +21,7 @@ class CreatePageCommand extends Command
         $ds = DIRECTORY_SEPARATOR;
 
         $this->templateFolder = __DIR__ . $ds . '..' . $ds . 'fileTemplates' . $ds;
-        $this->outputFolder = __DIR__ . $ds . '..' . $ds . 'output' . $ds;
+        $this->outputFolder = __DIR__ . $ds . '..' . $ds . '..' . $ds;
         $this->commonConfigFile = $this->outputFolder . 'config' . $ds . 'common.inc';
 
         $this->placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
