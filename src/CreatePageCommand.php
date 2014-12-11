@@ -9,14 +9,22 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreatePageCommand extends Command
 {
-    private $placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
+    private $placeholderPattern;
+    private $configPlaceholder;
+    private $templateFolder;
+    private $outputFolder;
+    private $commonConfigFile;
 
     public function __construct()
     {
         $ds = DIRECTORY_SEPARATOR;
         $this->templateFolder = __DIR__ . $ds . '..' . $ds . 'fileTemplates' . $ds;
-        $this->outputFolder = __DIR__ . $ds . '..' . $ds . 'output' . $ds;
+        $this->outputFolder = __DIR__ . $ds . '..' . $ds . '..' . $ds;
         $this->commonConfigFile = $this->outputFolder . 'config' . $ds . 'common.inc';
+
+        $this->placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
+        $this->configPlaceholder = '// [SWITCHER-INCLUDING-PLACE]';
+
         parent::__construct();
     }
 
@@ -115,12 +123,11 @@ class CreatePageCommand extends Command
             return false;
         }
 
-        $configPlaceholder = '// [SWITCHER-INCLUDING-PLACE]';
         $content = file_get_contents($this->commonConfigFile);
         $pageName = $this->translatePlaceholder('[SWCH_name_lower]', $arguments);
-        $newLineToConfig = '"1.0/' . $pageName . '/index" => "auth",' . PHP_EOL . "\t\t" . $configPlaceholder;
+        $newLineToConfig = '"1.0/' . $pageName . '/index" => "auth",' . PHP_EOL . "\t\t" . $this->configPlaceholder;
 
-        $content = str_replace($configPlaceholder, $newLineToConfig, $content);
+        $content = str_replace($this->configPlaceholder, $newLineToConfig, $content);
 
         file_put_contents($this->commonConfigFile, $content);
     }
