@@ -1,5 +1,7 @@
 <?php
 
+/** created by Switcher [SWCH_name_datetime] */
+
 Class [SWCH_name_upper]_Page extends PageInterface
 {
     public function index()

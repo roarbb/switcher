@@ -9,14 +9,26 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreatePageCommand extends Command
 {
-    private $placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
+    private $placeholderPattern;
+    private $configPlaceholder;
+    private $templateFolder;
+    private $outputFolder;
+    private $commonConfigFile;
+    private $templateFilePostfix;
 
     public function __construct()
     {
         $ds = DIRECTORY_SEPARATOR;
+
         $this->templateFolder = __DIR__ . $ds . '..' . $ds . 'fileTemplates' . $ds;
         $this->outputFolder = __DIR__ . $ds . '..' . $ds . 'output' . $ds;
         $this->commonConfigFile = $this->outputFolder . 'config' . $ds . 'common.inc';
+
+        $this->placeholderPattern = '/\[SWCH_(\w+)_(\w+)\]/';
+        $this->configPlaceholder = '// [SWITCHER-INCLUDING-PLACE]';
+
+        $this->templateFilePostfix = '.swch';
+
         parent::__construct();
     }
 
@@ -30,7 +42,7 @@ class CreatePageCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $inputArguments = $input->getArguments();
-        $files = Finder::findFiles('*.xml', '*.php')->from($this->templateFolder);
+        $files = Finder::findFiles('*.xml' . $this->templateFilePostfix, '*.php' . $this->templateFilePostfix)->from($this->templateFolder);
 
         foreach ($files as $key => $file) {
             $createdPathForNewFile = $this->createFolderForFile($file, $inputArguments);
@@ -68,7 +80,7 @@ class CreatePageCommand extends Command
     private function createFile(\SplFileInfo $file, $translatedOutputPath, $arguments)
     {
         $originalFileName = $file->getFilename();
-        $newFileName = $this->translatePlaceholder($originalFileName, $arguments);
+        $newFileName = $this->templateFileToRealFileName($this->translatePlaceholder($originalFileName, $arguments));
         $fileContent = $this->getFileContent($file->getRealPath(), $arguments);
 
         file_put_contents($translatedOutputPath . $newFileName, $fileContent);
@@ -115,12 +127,11 @@ class CreatePageCommand extends Command
             return false;
         }
 
-        $configPlaceholder = '// [SWITCHER-INCLUDING-PLACE]';
         $content = file_get_contents($this->commonConfigFile);
         $pageName = $this->translatePlaceholder('[SWCH_name_lower]', $arguments);
-        $newLineToConfig = '"1.0/' . $pageName . '/index" => "auth",' . PHP_EOL . "\t\t" . $configPlaceholder;
+        $newLineToConfig = '"1.0/' . $pageName . '/index" => "auth",' . PHP_EOL . "\t\t" . $this->configPlaceholder;
 
-        $content = str_replace($configPlaceholder, $newLineToConfig, $content);
+        $content = str_replace($this->configPlaceholder, $newLineToConfig, $content);
 
         file_put_contents($this->commonConfigFile, $content);
     }
@@ -142,8 +153,17 @@ class CreatePageCommand extends Command
             return lcfirst($value);
         }
 
-        if ($function == 'upper') {
+        if($function == 'upper') {
             return ucfirst($value);
         }
+
+        if($function == 'datetime') {
+            return date('d-m-Y H:i:s');
+        }
+    }
+
+    private function templateFileToRealFileName($filename)
+    {
+        return str_replace($this->templateFilePostfix, '', $filename);
     }
 }
