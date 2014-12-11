@@ -33,10 +33,7 @@ class CreatePageCommand extends Command
         $files = Finder::findFiles('*.xml', '*.php')->from($this->templateFolder);
 
         foreach ($files as $key => $file) {
-            /** @var \SplFileInfo $file */
-            $folderStructurePath = str_replace($this->templateFolder, '', $file->getPathname());
-
-            $createdPathForNewFile = $this->createFolderForFile($folderStructurePath, $inputArguments);
+            $createdPathForNewFile = $this->createFolderForFile($file, $inputArguments);
             $this->createFile($file, $createdPathForNewFile, $inputArguments);
         }
 
@@ -44,8 +41,9 @@ class CreatePageCommand extends Command
         $output->writeln('All done.');
     }
 
-    private function createFolderForFile($folderStructurePath, $arguments)
+    private function createFolderForFile(\SplFileInfo $file, $arguments)
     {
+        $folderStructurePath = str_replace($this->templateFolder, '', $file->getPathname());
         $folderOutputPath = $this->outputFolder;
         $pathPieces = explode(DIRECTORY_SEPARATOR, $folderStructurePath);
         array_pop($pathPieces); //because last element is file, I don't want to create it
