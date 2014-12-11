@@ -1,0 +1,47 @@
+<PAGE_CONFIG>
+    <SECTIONS>
+        <SECTION ID="WRAPPER">
+            <SECTIONS>
+                <SECTION ID="HEADER">
+                    <COMPONENTS>
+                        <COMPONENT ID="header"></COMPONENT>
+                        <COMPONENT ID="mainNavigation"></COMPONENT>
+                        <COMPONENT ID="secondaryNavigation"></COMPONENT>
+                    </COMPONENTS>
+                </SECTION>
+                <SECTION ID="CONTENT-TOP">
+                    <COMPONENTS>
+                        <COMPONENT ID="pageTitle"></COMPONENT>
+                        <COMPONENT ID="siteList"></COMPONENT>
+                        <COMPONENT ID="toolsNav"></COMPONENT>
+                        <COMPONENT ID='contextualNav'></COMPONENT>
+                    </COMPONENTS>
+                </SECTION>
+
+                <SECTION ID="MAIN">
+                    <SECTIONS>
+                        <SECTION ID="CONTENT">
+                            <COMPONENTS>
+                                <COMPONENT ID="messages"></COMPONENT>
+                                <COMPONENT ID="[SWCH_name_lower]"></COMPONENT>
+                            </COMPONENTS>
+                        </SECTION>
+                    </SECTIONS>
+                </SECTION>
+                <SECTION ID="FOOTER">
+                    <COMPONENTS>
+                        <COMPONENT ID="footer" ></COMPONENT>
+                    </COMPONENTS>
+                </SECTION>
+            </SECTIONS>
+        </SECTION>
+        <SECTION ID="OUTER">
+            <COMPONENTS>
+                <COMPONENT ID="modal"></COMPONENT>
+            </COMPONENTS>
+        </SECTION>
+    </SECTIONS>
+    <OPTIONS>
+        <TITLE>[SWCH_name_upper]</TITLE>
+    </OPTIONS>
+</PAGE_CONFIG>
